@@ -206,7 +206,7 @@ footer nav ul {
 	display: flex;
 	justify-content: center;
 	gap: 10px;
-	margin: 40px;
+	margin: 20px 40px 40px 40px;
 }
 
 .filtres button {
@@ -247,6 +247,20 @@ footer nav ul {
 .fa-solid {
 	color: #ffffff;
 }
+
+.projets {
+	display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.projets a {
+    display: flex;
+    gap: 10px;
+    padding-top: 10px;
+	text-decoration: none;
+    color: #000000;
+}
 /********* Modale **************/
 
 .open-modal {
@@ -273,7 +287,7 @@ footer nav ul {
 	max-width: calc(100vw - 20px);
 	max-height: calc(100vh - 20px);
 	background-color: white;
-	overflow: auto;
+	overflow-y: auto;
 	border-radius: 5px;
 }
 

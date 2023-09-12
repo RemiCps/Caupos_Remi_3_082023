@@ -84,9 +84,11 @@ let logout = document.querySelector(".logout")
   if (dataResponse) {
     logout.style.display = "flex"
     login.style.display = "none"
+    filtres.style.display = "none"
   } else {
     logout.style.display = "none"
     login.style.display = "flex"
+    filtres.style.display = "flex"
   }
 
 //------------------------------ Création de la modale -----------------------------//
@@ -112,4 +114,15 @@ const openModal = function (e) {
 document.querySelectorAll(".js-modal").forEach(a => {
   a.addEventListener("click", openModal)
   
+  let gallerieModal = document.querySelector(".gallery-modal")
+  gallerieModal.innerHTML = "";
+  
+  // Parcours le tableau des works pour intégrer chaque work dans des éléments html créés ci-dessous
+  for (let work of works) {
+    gallerieModal.innerHTML += `<figure>
+     <a href="#" class="delete-work" data-id="${work.id}"><i class="fa-solid fa-trash-can"></i></a>
+     <img src="${work.imageUrl}" alt="${work.title}">
+     <figcaption>Éditer</figcaption>
+     </figure>`;
+  }
 })
