@@ -78,6 +78,16 @@ for (let element of homeEditLogin) {
   }
 }
 
+let login = document.querySelector(".login")
+let logout = document.querySelector(".logout")
+
+  if (dataResponse) {
+    logout.style.display = "flex"
+    login.style.display = "none"
+  } else {
+    logout.style.display = "none"
+    login.style.display = "flex"
+  }
 
 //------------------------------ Création de la modale -----------------------------//
 let modal = null
