@@ -22,20 +22,60 @@
 	
     <!-- Modale 1 -->
 	<div id="modal1" class="modal" aria-hidden="true" role="dialog" style="display: none;">
-		<div class="modal-wrapper">
-				<div id="modal-v1">
+		<div class="modal-wrapper js-modal-stop">
+			<div id="modal-v1">
+				<div class="btn-x">
+					<button class="js-modal-close"><i class="fa-solid fa-xmark" style="color: #000000;"></i></button>
+				</div>
+				<h3 id="titlemodal">Galerie Photos</h3>
+				<div class="gallery-modal" id="gallery-modal">
+					<!---Ajout des balises figures en JS-->
+				</div>
+				<div class="btn-modif-modal">
+					<button class="btn-ajout">Ajouter une photo</button>
+				</div>
+			</div>
+			<div id="modal-v2" style="display:none;">
+				<div class="btn-retour-x">
+					<div class="btn-retour">
+						<button class="js-retour-modal1" id="retour"><i class="fa-solid fa-arrow-left"></i></button>
+					</div>
 					<div class="btn-x">
-						<button class="js-modal-close"><i class="fa-solid fa-xmark" style="color: #000000;"></i></button>
-					</div>
-					<h3 id="titlemodal">Galerie Photos</h3>
-					<div class="gallery-modal" id="gallery-modal">
-						<!---Ajout des balises figures en JS-->
-					</div>
-					<div class="btn-modif-modal">
-						<button class="btn-ajout">Ajouter une photo</button>
-						<button class="btn-suppr">Supprimer la galerie</button>
+						<button class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
 					</div>
 				</div>
+				
+				<h3 id="titlemodal2">Ajout photo</h3>
+				<form class="modal-form" method="post" action="">
+					<div id="display-image">
+						<div class="display-image-none">
+							<i class="fa-sharp fa-solid fa-image"></i>
+							<input type="file" name="image" id="image" alt="Ajouter photo" accept="image/jpg, image/png">
+							<label for="image">+ Ajout Photo</label>
+							<p>jpeg, png : 4mo max</p>
+						</div>
+					</div>
+					<div class="text-form">
+						<label for="title">Titre</label><br>
+						<input type="text" name="title" id="title"><br>
+						<label for="category">Catégorie</label><br>
+							<select name="category" id="category">
+								<option class="option-vide"></option>
+							<!---- Ajout des balises option en JS ----->
+							</select>
+					
+					</div>
+					<p class="erreur-form-modal">Veuillez remplir correctement tous les champs avant de valider</p>
+					<input class="btn-submit-modal" type="submit" value="Valider">
+				</form>
+			</div>
+	
+			<div id="modal-v3" style="display:none;">
+				<div class="btn-x">
+					<button class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
+				</div>
+				<h3>Votre projet a été ajouté !</h3>
+			</div>
 		</div>	
 	</div>
 <header>

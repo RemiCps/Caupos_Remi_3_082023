@@ -93,6 +93,9 @@ let logout = document.querySelector(".logout")
 
 //------------------------------ Création de la modale -----------------------------//
 let modal = null
+const stopPropagation = function(e) {
+  e.stopPropagation()
+} 
 const closeModal = function(e) {
   if (modal === null) return
   e.preventDefault() 
@@ -100,6 +103,7 @@ const closeModal = function(e) {
   modal.setAttribute("aria-hidden", "true")
   modal.removeEventListener("click", closeModal)
   modal.querySelector(".js-modal-close").removeEventListener("click", closeModal)
+  modal.querySelector(".js-modal-stop").removeEventListener("click", stopPropagation)
   modal = null
 }
 
@@ -109,20 +113,85 @@ const openModal = function (e) {
   modal.style.display = null
   modal.removeAttribute("aria-hidden")
   modal.querySelector(".js-modal-close").addEventListener("click", closeModal)
+  modal.querySelector(".js-modal-stop").addEventListener("click", stopPropagation)
   modal.addEventListener("click", closeModal)
 }
 document.querySelectorAll(".js-modal").forEach(a => {
   a.addEventListener("click", openModal)
-  
-  let gallerieModal = document.querySelector(".gallery-modal")
-  gallerieModal.innerHTML = "";
-  
-  // Parcours le tableau des works pour intégrer chaque work dans des éléments html créés ci-dessous
-  for (let work of works) {
-    gallerieModal.innerHTML += `<figure>
-     <a href="#" class="delete-work" data-id="${work.id}"><i class="fa-solid fa-trash-can"></i></a>
-     <img src="${work.imageUrl}" alt="${work.title}">
-     <figcaption>Éditer</figcaption>
-     </figure>`;
-  }
 })
+
+ 
+ 
+//------------------ Affichage gallerie ------------------// 
+function genererPhotosModal(works) {
+  //Création d'une boucle qui va prendre toutes les photos
+  for (let i = 0; i < works.length; i++) {
+    // Création des balises
+    const article = works[i];
+
+    const sectionGallery = document.querySelector(".gallery-modal");
+
+    const articleElement = document.createElement("article");
+    articleElement.classList.add("photosRealisation");
+    articleElement.dataset.id = [i];
+
+    const idElement = document.createElement("p");
+    idElement.innerText = article.id;
+
+    //Ajout de l'icone supprimé-----------
+    const iconeElement = document.createElement("div");
+    iconeElement.classList.add("deletePhoto");
+    iconeElement.innerHTML =
+      '<i class="fa-solid fa-trash-can"></i>';
+
+    const imageElement = document.createElement("img");
+    imageElement.src = article.imageUrl;
+
+    const categoryIdElement = document.createElement("p");
+    categoryIdElement.innerText = article.categoryId;
+
+    //Ajout de articleElement dans sectionGallery
+
+    sectionGallery.appendChild(articleElement);
+
+    //Ajout de nos balises au DOM
+    articleElement.appendChild(imageElement);
+    articleElement.appendChild(iconeElement);
+
+    //--------------Suppression photo--------------------------------
+    iconeElement.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const iconeElement = article.id;
+      let monToken = localStorage.getItem("token");
+      console.log(iconeElement);
+      let response = await fetch(
+        `http://localhost:5678/api/works/${iconeElement}`,
+        {
+          method: "DELETE",
+          headers: {
+            accept: "*/*",
+            Authorization: `Bearer ${monToken}`,
+          },
+        }
+      );
+      if (response.ok) {
+        return false;
+        // if HTTP-status is 200-299
+        //alert("Photo supprimé avec succes");
+        // obtenir le corps de réponse (la méthode expliquée ci-dessous)
+      } else {
+        alert("Echec de suppression");
+      }
+    });
+
+    //---------------FIN DE GENERER PHOTO--------------------
+  }}
+  genererPhotosModal(works)
+
+  // Switche sur la v2 en cliquant sur le bouton "Ajout photo"
+document.querySelector(".btn-ajout").addEventListener("click", function () {
+  const modal2 = document.getElementById("modal-v2")
+  modal2.style.display = null
+  
+});

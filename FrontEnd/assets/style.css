@@ -336,13 +336,6 @@ aside h3 {
 	border: none;
 }
 
-.btn-suppr {
-	border:none;
-	background-color: white;
-	color: rgb(247, 79, 79);
-	font-family: 'Syne';
-}
-
 .btn-modif-modal {
 	display: flex;
 	flex-direction: column;
@@ -361,3 +354,18 @@ aside h3 {
 	box-shadow: 0 0 10px rgb(129, 129, 170);
 }
 
+.fa-trash-can {
+	position: relative;
+    left: 78%;
+    top: 13%;
+    color: white;
+    background-color: black;
+    padding: 3px;
+    font-size: 0.8em;
+}
+
+#titlemodal {
+	text-align: center;
+	font-size: 25px;
+	padding-bottom: 20px;
+}
