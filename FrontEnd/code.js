@@ -90,6 +90,15 @@ let logout = document.querySelector(".logout")
     login.style.display = "flex"
     filtres.style.display = "flex"
   }
+//------------------------------ Switcher de modale ----------------------------//
+function switchModal(id) {
+  // les trois v sont en "none" par défaut
+  document.getElementById("modal-v1").style.display = "none";
+  document.getElementById("modal-v2").style.display = "none";
+  document.getElementById("modal-v3").style.display = "none";
+  // Appel à la fonction pour les rendre "block"
+  document.getElementById(id).style.display = "block";
+}
 
 //------------------------------ Création de la modale -----------------------------//
 let modal = null
@@ -190,8 +199,158 @@ function genererPhotosModal(works) {
   genererPhotosModal(works)
 
   // Switche sur la v2 en cliquant sur le bouton "Ajout photo"
-document.querySelector(".btn-ajout").addEventListener("click", function () {
-  const modal2 = document.getElementById("modal-v2")
-  modal2.style.display = null
-  
+  document.querySelector(".btn-ajout").addEventListener("click", function () {
+    switchModal("modal-v2");
+  });
+
+  // Switche sur la v1 en cliquant sur la flèche retour
+document
+.querySelector(".js-retour-modal1")
+.addEventListener("click", function () {
+  switchModal("modal-v1");
+  removePhoto();
+  removeTitle();
+  removeCategory();
+  messageErrFormModal.style.visibility = "hidden";
+});
+
+//---------------------------------------------------------------------------------//
+//--------------------------- Effacer le contenu du formulaire --------------------//
+// Fonction effacer la photo uploadée
+function removePhoto() {
+  imageForm.value = null;
+  document.querySelector("#display-image").style.backgroundImage = null;
+  document.querySelector(".display-image-none").style.display = "block";
+}
+
+// Fonction effacer le titre
+const titleForm = document.querySelector("#title");
+function removeTitle() {
+  titleForm.value = null;
+}
+
+// Fonction effacer la categorie selectionnée
+const categoryForm = document.querySelector("#category");
+function removeCategory() {
+  categoryForm.value = null;
+}
+
+//---------------------------------------------------------------------------------//
+//------------------------ Upload photo dans le formulaire ------------------------//
+const imageForm = document.querySelector("#image");
+var uploadedImage = "";
+
+imageForm.addEventListener("change", function () {
+  const reader = new FileReader();
+  reader.addEventListener("load", () => {
+    uploadedImage = reader.result;
+    document.querySelector(
+      "#display-image"
+    ).style.backgroundImage = `url(${uploadedImage})`;
+    document.querySelector(".display-image-none").style.display = "none";
+  });
+  reader.readAsDataURL(this.files[0]);
+});
+
+//--------------------------------------------------------------------------------//
+//------------------ Création liste déroulante formulaire modale -----------------//
+
+// Crée les <options> de la balise <select> en parcourant la liste des catégories de l'API
+
+for (let i = 0; i < categories.length; i++) {
+  const selectForm = document.getElementById("category");
+
+  const categorie = categories[i];
+
+  const optionForm = document.createElement("option");
+  optionForm.innerText = categorie.name;
+  optionForm.value = categorie.id;
+
+  selectForm.appendChild(optionForm);
+}
+
+//--------------------------------------------------------------------------------//
+//---------------------- Changement couleur bouton submit ------------------------//
+
+// Bouton Valider passera de gris à vert si tous les champs sont remplis
+function submitFormColor() {
+  if (
+    imageForm.value.length > 0 &&
+    titleForm.value.length > 0 &&
+    categoryForm.value.length > 0
+  ) {
+    document.querySelector(".btn-submit-modal").style.background = "#1D6154";
+  } else {
+    document.querySelector(".btn-submit-modal").style.background = "grey";
+  }
+}
+
+imageForm.addEventListener("change", submitFormColor);
+titleForm.addEventListener("keyup", submitFormColor);
+categoryForm.addEventListener("change", submitFormColor);
+
+//--------------------------------------------------------------------------------//
+//-------------------- Envoi des données du formulaire modale --------------------//
+
+// Récupère les données du formulaire
+const projectForm = document.querySelector(".modal-form");
+let messageErrFormModal = document.querySelector(".erreur-form-modal");
+
+projectForm.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const formData = new FormData(projectForm);
+  const image = formData.get("image");
+  const title = formData.get("title");
+  const category = formData.get("category");
+
+  // Instruction if pour contrôler la validité de tous les champs
+  if (image.size == 0) {
+    messageErrFormModal.innerText = "Veuillez mettre une image";
+    messageErrFormModal.style.visibility = "visible";
+    return 0;
+  }
+
+  if (image.size > 4194304) {
+    messageErrFormModal.innerText =
+      "Veuillez mettre une image dont la taille est < à 4mo";
+    messageErrFormModal.style.visibility = "visible";
+    removePhoto();
+    return 0;
+  }
+
+  if (title.length == 0) {
+    messageErrFormModal.innerText = "Veuillez mettre un titre";
+    messageErrFormModal.style.visibility = "visible";
+    return 0;
+  }
+
+  if (!category) {
+    messageErrFormModal.innerText = "Veuillez selectionner une catégorie";
+    messageErrFormModal.style.visibility = "visible";
+    return 0;
+  }
+
+  // Envoie les données du nouveau projet en POST via fetch
+  fetch(`${works}`, {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      Authorization: `Bearer ${dataResponse.token}`,
+    },
+    body: formData,
+  })
+    .then(async function () {
+      // GetWorks puis GenererWorks pour mettre à jour les données sur la modale et la gallery
+      works = await getWorks();
+      genererWorks(works);
+      // Si validation des données ok, switch vers la v3 pour message de réussite
+      switchModal("modal-v3");
+    })
+    .catch((error) => {
+      alert(
+        "Une erreur est survenue lors de l'envoi des données du formulaire : " +
+          error.message
+      );
+    });
 });
