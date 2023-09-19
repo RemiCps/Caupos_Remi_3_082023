@@ -63,7 +63,6 @@ boutonLogout.addEventListener("click", function (event) {
 
 // Récupère les data et les parse pour changer la config html de l'index si connecté ou non
 let dataResponse = window.localStorage.getItem("token");
-console.log(dataResponse)
 
 //----------------------------------------------------------------------------------//
 //---------------------------- Apparition du mode edition --------------------------//
@@ -92,16 +91,15 @@ let logout = document.querySelector(".logout")
   }
 //------------------------------ Switcher de modale ----------------------------//
 function switchModal(id) {
-  // les trois v sont en "none" par défaut
+  
   document.getElementById("modal-v1").style.display = "none";
   document.getElementById("modal-v2").style.display = "none";
-  document.getElementById("modal-v3").style.display = "none";
-  // Appel à la fonction pour les rendre "block"
-  document.getElementById(id).style.display = "block";
+ 
+  document.getElementById(id).style.display = null;
 }
 
 //------------------------------ Création de la modale -----------------------------//
-let modal = null
+let modal = document.querySelector(".modal")
 const stopPropagation = function(e) {
   e.stopPropagation()
 } 
@@ -129,7 +127,13 @@ document.querySelectorAll(".js-modal").forEach(a => {
   a.addEventListener("click", openModal)
 })
 
- 
+// Modale se ferme en cliquant sur la croix v1 ou v2 
+let fermetureModals = document.querySelectorAll(".js-modal-close").forEach(function (btn) {
+  btn.addEventListener("click", closeModal);
+});
+
+
+
  
 //------------------ Affichage gallerie ------------------// 
 function genererPhotosModal(works) {
@@ -147,7 +151,7 @@ function genererPhotosModal(works) {
     const idElement = document.createElement("p");
     idElement.innerText = article.id;
 
-    //Ajout de l'icone supprimé-----------
+    //---------- Ajout de l'icone supprimé -----------//
     const iconeElement = document.createElement("div");
     iconeElement.classList.add("deletePhoto");
     iconeElement.innerHTML =
@@ -167,7 +171,7 @@ function genererPhotosModal(works) {
     articleElement.appendChild(imageElement);
     articleElement.appendChild(iconeElement);
 
-    //--------------Suppression photo--------------------------------
+    //--------------Suppression photo--------------------------------//
     iconeElement.addEventListener("click", async (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -179,22 +183,19 @@ function genererPhotosModal(works) {
         {
           method: "DELETE",
           headers: {
-            accept: "*/*",
             Authorization: `Bearer ${monToken}`,
           },
         }
       );
       if (response.ok) {
         return false;
-        // if HTTP-status is 200-299
-        //alert("Photo supprimé avec succes");
-        // obtenir le corps de réponse (la méthode expliquée ci-dessous)
+
       } else {
         alert("Echec de suppression");
       }
     });
 
-    //---------------FIN DE GENERER PHOTO--------------------
+
   }}
   genererPhotosModal(works)
 
@@ -330,27 +331,17 @@ projectForm.addEventListener("submit", function (e) {
     messageErrFormModal.style.visibility = "visible";
     return 0;
   }
-
+})
   // Envoie les données du nouveau projet en POST via fetch
-  fetch(`${works}`, {
-    method: "POST",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${dataResponse.token}`,
-    },
-    body: formData,
-  })
-    .then(async function () {
-      // GetWorks puis GenererWorks pour mettre à jour les données sur la modale et la gallery
-      works = await getWorks();
-      genererWorks(works);
-      // Si validation des données ok, switch vers la v3 pour message de réussite
-      switchModal("modal-v3");
-    })
-    .catch((error) => {
-      alert(
-        "Une erreur est survenue lors de l'envoi des données du formulaire : " +
-          error.message
-      );
-    });
-});
+  const sendWork = async (event) => {
+    event.preventDefault();
+    
+    const response = await fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        headers: {
+            "Content-Type" : application/json,
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: formData
+      })
+    }
