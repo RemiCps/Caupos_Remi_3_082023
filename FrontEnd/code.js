@@ -360,7 +360,11 @@ const response = await fetch("http://localhost:5678/api/works", {
     removePhoto();
     removeTitle();
     removeCategory(); 
+    fetch("http://localhost:5678/api/works")
+.then((response) => response.json())
+.then((json) => console.log(json));
   }
-      
+    genererPhotosModal()
+    genererWorks()  
 })
 
