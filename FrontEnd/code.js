@@ -3,24 +3,25 @@ let works = await fetch("http://localhost:5678/api/works")
 works = await works.json();
 
 // Récupération de l'élément du DOM qui accueillera les fiches
-const sectionFiches = document.querySelector(".gallery");
+
  
 function genererWorks(works){
-    for (let i = 0; i < works.length; i++) {
+  const sectionFiches = document.querySelector(".gallery")
+  for (let i = 0; i < works.length; i++) {
 
-        const article = works[i];        
-        // Création d’une balise dédiée à une fiche
-        const worksElement = document.createElement("figure");
-        // Création des balises 
-        const imageElement = document.createElement("img");
-        imageElement.src = article.imageUrl;
-        const nomElement = document.createElement("figcaption");
-        nomElement.innerText = article.title;
-        
-        sectionFiches.appendChild(worksElement);
-        worksElement.appendChild(imageElement);
-        worksElement.appendChild(nomElement);
-    }
+    const article = works[i];        
+    // Création d’une balise dédiée à une fiche
+    const worksElement = document.createElement("figure");
+    // Création des balises 
+    const imageElement = document.createElement("img");
+    imageElement.src = article.imageUrl;
+    const nomElement = document.createElement("figcaption");
+    nomElement.innerText = article.title;
+    
+    sectionFiches.appendChild(worksElement);
+    worksElement.appendChild(imageElement);
+    worksElement.appendChild(nomElement);
+  }
 }
 genererWorks(works);
 
@@ -30,26 +31,27 @@ genererWorks(works);
 const tousFiltrer = document.querySelector(".btnTous");
 
 tousFiltrer.addEventListener("click", function () {
-    console.log(works)
-    genererWorks(works)
-})
+  console.log(works)
+  genererWorks(works)
+  }
+)
 
 let categories = await fetch("http://localhost:5678/api/categories")
 categories = await categories.json()
 let filtres = document.querySelector(".filtres")
 
 function listerCategorie (){
-    categories.forEach ((categorie) => {
-        let boutons = document.createElement("button")
-        boutons.innerHTML = categorie.name
-        filtres.appendChild(boutons)
-        boutons.addEventListener("click", function () {
-                 const worksFiltres = works.filter(obj => obj.categoryId === categorie.id)
-                 document.querySelector(".gallery").innerHTML = "";
-                 console.log(worksFiltres)
-                 genererWorks(worksFiltres)
-             })
+  categories.forEach ((categorie) => {
+    let boutons = document.createElement("button")
+    boutons.innerHTML = categorie.name
+    filtres.appendChild(boutons)
+    boutons.addEventListener("click", function () {
+      const worksFiltres = works.filter(obj => obj.categoryId === categorie.id)
+      document.querySelector(".gallery").innerHTML = "";
+      console.log(worksFiltres)
+      genererWorks(worksFiltres)
     })
+  })
 }
 listerCategorie()
 //------------------------------- Les données du localstorage ------------------------------//
@@ -99,7 +101,7 @@ function switchModal(id) {
 }
 
 //------------------------------ Création de la modale -----------------------------//
-let modal = document.querySelector(".modal")
+let modal = null
 const stopPropagation = function(e) {
   e.stopPropagation()
 } 
@@ -111,6 +113,7 @@ const closeModal = function(e) {
   modal.removeEventListener("click", closeModal)
   modal.querySelector(".js-modal-close").removeEventListener("click", closeModal)
   modal.querySelector(".js-modal-stop").removeEventListener("click", stopPropagation)
+  switchModal("modal-v1");
   modal = null
 }
 
@@ -134,72 +137,78 @@ let fermetureModals = document.querySelectorAll(".js-modal-close").forEach(funct
 
 
 
- 
+
 //------------------ Affichage gallerie ------------------// 
 function genererPhotosModal(works) {
   //Création d'une boucle qui va prendre toutes les photos
   for (let i = 0; i < works.length; i++) {
-    // Création des balises
-    const article = works[i];
+  // Création des balises
+  const article = works[i];
 
-    const sectionGallery = document.querySelector(".gallery-modal");
+  const sectionGallery = document.querySelector(".gallery-modal");
 
-    const articleElement = document.createElement("article");
-    articleElement.classList.add("photosRealisation");
-    articleElement.dataset.id = [i];
+  const articleElement = document.createElement("article");
+  articleElement.classList.add("photosRealisation");
+  articleElement.dataset.id = [i];
 
-    const idElement = document.createElement("p");
-    idElement.innerText = article.id;
+  const idElement = document.createElement("p");
+  idElement.innerText = article.id;
 
-    //---------- Ajout de l'icone supprimé -----------//
-    const iconeElement = document.createElement("div");
-    iconeElement.classList.add("deletePhoto");
-    iconeElement.innerHTML =
-      '<i class="fa-solid fa-trash-can"></i>';
+  //Ajout de l'icone supprimé-----------
+  const iconeElement = document.createElement("div");
+  iconeElement.classList.add("deletePhoto");
+  iconeElement.innerHTML =
+    '<i class="fa-solid fa-trash-can"></i>';
 
-    const imageElement = document.createElement("img");
-    imageElement.src = article.imageUrl;
+  const imageElement = document.createElement("img");
+  imageElement.src = article.imageUrl;
 
-    const categoryIdElement = document.createElement("p");
-    categoryIdElement.innerText = article.categoryId;
+  const categoryIdElement = document.createElement("p");
+  categoryIdElement.innerText = article.categoryId;
 
-    //Ajout de articleElement dans sectionGallery
+  //Ajout de articleElement dans sectionGallery
 
-    sectionGallery.appendChild(articleElement);
+  sectionGallery.appendChild(articleElement);
 
-    //Ajout de nos balises au DOM
-    articleElement.appendChild(imageElement);
-    articleElement.appendChild(iconeElement);
+  //Ajout de nos balises au DOM
+  articleElement.appendChild(imageElement);
+  articleElement.appendChild(iconeElement);
 
-    //--------------Suppression photo--------------------------------//
-    iconeElement.addEventListener("click", async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const iconeElement = article.id;
-      let monToken = localStorage.getItem("token");
-      console.log(iconeElement);
-      let response = await fetch(
-        `http://localhost:5678/api/works/${iconeElement}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${monToken}`,
-          },
-        }
+  //--------------Suppression photo--------------------------------
+  
+  iconeElement.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    const sectionFiches = document.querySelector(".gallery")
+    const worksElement = document.querySelector("figure")      
+    
+    const iconeElement = article.id
+    let response = await fetch(
+      `http://localhost:5678/api/works/${iconeElement}`,
+      {
+      method: "DELETE",
+      headers: {
+      Authorization: `Bearer ${dataResponse}`,
+        },
+      }
       );
       if (response.ok) {
-        return false;
-
+        alert("Photo supprimé avec succes")
+        sectionGallery.removeChild(articleElement)
+        sectionFiches.removeChild(worksElement)
+        
+        
       } else {
-        alert("Echec de suppression");
+        alert("Echec de la suppression")
       }
     });
 
-
-  }}
-  genererPhotosModal(works)
+  }
+}
+genererPhotosModal(works)
 
   // Switche sur la v2 en cliquant sur le bouton "Ajout photo"
+
   document.querySelector(".btn-ajout").addEventListener("click", function () {
     switchModal("modal-v2");
   });
@@ -215,26 +224,6 @@ document
   messageErrFormModal.style.visibility = "hidden";
 });
 
-//---------------------------------------------------------------------------------//
-//--------------------------- Effacer le contenu du formulaire --------------------//
-// Fonction effacer la photo uploadée
-function removePhoto() {
-  imageForm.value = null;
-  document.querySelector("#display-image").style.backgroundImage = null;
-  document.querySelector(".display-image-none").style.display = "block";
-}
-
-// Fonction effacer le titre
-const titleForm = document.querySelector("#title");
-function removeTitle() {
-  titleForm.value = null;
-}
-
-// Fonction effacer la categorie selectionnée
-const categoryForm = document.querySelector("#category");
-function removeCategory() {
-  categoryForm.value = null;
-}
 
 //---------------------------------------------------------------------------------//
 //------------------------ Upload photo dans le formulaire ------------------------//
@@ -270,6 +259,29 @@ for (let i = 0; i < categories.length; i++) {
   selectForm.appendChild(optionForm);
 }
 
+
+//---------------------------------------------------------------------------------//
+//--------------------------- Effacer le contenu du formulaire --------------------//
+// Fonction effacer la photo uploadée
+function removePhoto() {
+  imageForm.value = null;
+  document.querySelector("#display-image").style.backgroundImage = null;
+  document.querySelector(".display-image-none").style.display = "block";
+}
+
+// Fonction effacer le titre
+const titleForm = document.querySelector("#title");
+function removeTitle() {
+  titleForm.value = null;
+}
+
+// Fonction effacer la categorie selectionnée
+const categoryForm = document.querySelector("#category");
+function removeCategory() {
+  categoryForm.value = null;
+}
+
+
 //--------------------------------------------------------------------------------//
 //---------------------- Changement couleur bouton submit ------------------------//
 
@@ -297,7 +309,7 @@ categoryForm.addEventListener("change", submitFormColor);
 const projectForm = document.querySelector(".modal-form");
 let messageErrFormModal = document.querySelector(".erreur-form-modal");
 
-projectForm.addEventListener("submit", function (e) {
+projectForm.addEventListener("submit", async function (e) {
   e.preventDefault();
 
   const formData = new FormData(projectForm);
@@ -331,17 +343,24 @@ projectForm.addEventListener("submit", function (e) {
     messageErrFormModal.style.visibility = "visible";
     return 0;
   }
+
+    //***** Envoie les données du nouveau projet en POST via fetch
+
+const response = await fetch("http://localhost:5678/api/works", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${dataResponse}`,
+    Accept: "application/json"
+  },
+  body: formData,
 })
-  // Envoie les données du nouveau projet en POST via fetch
-  const sendWork = async (event) => {
-    event.preventDefault();
     
-    const response = await fetch("http://localhost:5678/api/works", {
-        method: "POST",
-        headers: {
-            "Content-Type" : application/json,
-            "Authorization": `Bearer ${localStorage.getItem("token")}`
-        },
-        body: formData
-      })
-    }
+  if (response.ok) {
+    alert("Votre projet a bien été ajouté à la base de données")
+    removePhoto();
+    removeTitle();
+    removeCategory(); 
+  }
+      
+})
+
