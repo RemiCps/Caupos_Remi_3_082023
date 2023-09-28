@@ -54,20 +54,14 @@ const loggin = async (mail, motDePasse) => {
             localStorage.setItem("token", result.token);
             document.location.href = "index.html";
 
-        } else if (response.status === 404) {
+        } else if (response.status === 404 || response.status === 401) {
             if (motDePasse == "") {
                 messageErreurLogin(".erreurMotDePasse", "Le champ Mot de passe est vide");
             } else {
                 messageErreurLogin(".erreurMotDePasse", "Erreur dans l’identifiant ou le mot de passe");
             }
 
-        } else if (response.status === 401) {
-            if (motDePasse == "") {
-                messageErreurLogin(".erreurMotDePasse", "Le champ Mot de passe est vide");
-            } else {
-                messageErreurLogin(".erreurMotDePasse", "Erreur dans l’identifiant ou le mot de passe");
-            }
-        };
+        }
 
     } catch (error) {
         if (motDePasse == "") {
