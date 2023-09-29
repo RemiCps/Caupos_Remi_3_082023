@@ -72,9 +72,9 @@ let dataResponse = window.localStorage.getItem("token")
 //----------------------------------------------------------------------------------//
 //---------------------------- Apparition du mode edition --------------------------//
 // Fait apparaitre les éléments cachés si logged
-let homeEditLogin = document.getElementsByClassName("log")
+let accueilModeEdition = document.getElementsByClassName("log")
 
-for (let element of homeEditLogin) {
+for (let element of accueilModeEdition) {
   if (dataResponse) {
     element.style.display = "flex"
   } else {
@@ -136,7 +136,7 @@ document.querySelectorAll(".js-modal").forEach(a => {
 // Modale se ferme en cliquant sur la croix v1 ou v2 
 let fermetureModals = document.querySelectorAll(".js-modal-close").forEach(function (btn) {
   btn.addEventListener("click", closeModal)
-});
+})
 
 
 
@@ -146,37 +146,37 @@ function genererPhotosModal(works) {
   //Création d'une boucle qui va prendre toutes les photos
   for (let i = 0; i < works.length; i++) {
   // Création des balises
-  const article = works[i]
+    const article = works[i]
 
-  const sectionGallery = document.querySelector(".gallery-modal")
+    const sectionGallery = document.querySelector(".gallery-modal")
 
-  const articleElement = document.createElement("article")
-  articleElement.classList.add("photosRealisation")
-  articleElement.dataset.id = [i]
+    const articleElement = document.createElement("article")
+    articleElement.classList.add("photosRealisation")
+    articleElement.dataset.id = [i]
 
-  const idElement = document.createElement("p")
-  idElement.innerText = article.id
+    const idElement = document.createElement("p")
+    idElement.innerText = article.id
 
-  //Ajout de l'icone supprimé-----------
-  const iconeElement = document.createElement("div")
-  iconeElement.setAttribute("id", article.id)
-  iconeElement.classList.add("deletePhoto")
-  iconeElement.innerHTML =
-    '<i class="fa-solid fa-trash-can"></i>'
+    //Ajout de l'icone supprimé-----------
+    const iconeElement = document.createElement("div")
+    iconeElement.setAttribute("id", article.id)
+    iconeElement.classList.add("deletePhoto")
+    iconeElement.innerHTML =
+      '<i class="fa-solid fa-trash-can"></i>'
 
-  const imageElement = document.createElement("img")
-  imageElement.src = article.imageUrl
+    const imageElement = document.createElement("img")
+    imageElement.src = article.imageUrl
 
-  const categoryIdElement = document.createElement("p")
-  categoryIdElement.innerText = article.categoryId
+    const categoryIdElement = document.createElement("p")
+    categoryIdElement.innerText = article.categoryId
 
-  //Ajout de articleElement dans sectionGallery
+    //Ajout de articleElement dans sectionGallery
 
-  sectionGallery.appendChild(articleElement)
+    sectionGallery.appendChild(articleElement)
 
-  //Ajout de nos balises au DOM
-  articleElement.appendChild(imageElement)
-  articleElement.appendChild(iconeElement)
+    //Ajout de nos balises au DOM
+    articleElement.appendChild(imageElement)
+    articleElement.appendChild(iconeElement)
 
   //--------------Suppression photo--------------------------------
   
@@ -185,8 +185,8 @@ function genererPhotosModal(works) {
     
     const sectionFiches = document.querySelector(".gallery")          
     const iconeElement = article.id
-    const idWeWant = `fig-${iconeElement}`
-    console.log(idWeWant)
+    const idCible = `fig-${iconeElement}`
+    
     let response = await fetch(
       `http://localhost:5678/api/works/${iconeElement}`,
       {
@@ -198,9 +198,9 @@ function genererPhotosModal(works) {
       );
       if (response.ok) {
         alert("Photo supprimé avec succes")
-        const picturedel = document.getElementById(idWeWant)
+        const pictureSupprime = document.getElementById(idCible)
         sectionGallery.removeChild(articleElement)
-        sectionFiches.removeChild(picturedel)
+        sectionFiches.removeChild(pictureSupprime)
         
         
       } else {
@@ -351,14 +351,14 @@ projectForm.addEventListener("submit", async function (e) {
 
     //***** Envoie les données du nouveau projet en POST via fetch
 
-const response = await fetch("http://localhost:5678/api/works", {
-  method: "POST",
-  headers: {
-    Authorization: `Bearer ${dataResponse}`,
-    Accept: "application/json"
-  },
-  body: formData,
-})
+  const response = await fetch("http://localhost:5678/api/works", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${dataResponse}`,
+      Accept: "application/json"
+    },
+    body: formData,
+  })
     
   if (response.ok) {
     alert("Votre projet a bien été ajouté à la base de données")
@@ -366,15 +366,15 @@ const response = await fetch("http://localhost:5678/api/works", {
     removeTitle()
     removeCategory()
     
-const sectionFiches = document.querySelector(".gallery")
-const sectionGallery = document.querySelector(".gallery-modal")
+    const sectionFiches = document.querySelector(".gallery")
+    const sectionGallery = document.querySelector(".gallery-modal")
 
-sectionFiches.innerHTML = ""
-sectionGallery.innerHTML = ""
+    sectionFiches.innerHTML = ""
+    sectionGallery.innerHTML = ""
 
-const travaux = await fetchWorks()
-  genererPhotosModal(travaux) 
-  genererWorks(travaux)
+    const travaux = await fetchWorks()
+    genererPhotosModal(travaux) 
+    genererWorks(travaux)
   
   }
 }
