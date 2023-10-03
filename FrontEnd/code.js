@@ -8,7 +8,7 @@ const works = await fetchWorks()
 // Récupération de l'élément du DOM qui accueillera les fiches
 
 function genererWorks(works) {
-   const sectionFiches = document.querySelector(".gallery")
+   const sectionGalerie = document.querySelector(".gallery")
    for (let i = 0; i < works.length; i++) {
 
       const article = works[i];
@@ -21,7 +21,7 @@ function genererWorks(works) {
       const nomElement = document.createElement("figcaption")
       nomElement.innerText = article.title
 
-      sectionFiches.appendChild(worksElement)
+      sectionGalerie.appendChild(worksElement)
       worksElement.appendChild(imageElement)
       worksElement.appendChild(nomElement)
    }
@@ -32,9 +32,9 @@ genererWorks(works);
 
 // filtre tous
 const tousFiltrer = document.querySelector(".btnTous");
-const sectionFiches = document.querySelector(".gallery")
+const sectionGalerie = document.querySelector(".gallery")
 tousFiltrer.addEventListener("click", function () {
-   sectionFiches.innerHTML = ""
+   sectionGalerie.innerHTML = ""
    genererWorks(works)
 })
 
@@ -50,7 +50,6 @@ function listerCategories() {
       boutons.addEventListener("click", function () {
          const worksFiltres = works.filter(obj => obj.categoryId === categorie.id)
          document.querySelector(".gallery").innerHTML = ""
-         console.log(worksFiltres)
          genererWorks(worksFiltres)
       })
    })
@@ -98,7 +97,7 @@ logout.addEventListener("click", function (e) {
 })
 
 //------------------------------ Switcher de modale ----------------------------//
-function switchModal(id) {
+function changerModale(id) {
    document.getElementById("modal-v1").style.display = "none"
    document.getElementById("modal-v2").style.display = "none"
    document.getElementById(id).style.display = null
@@ -110,34 +109,34 @@ const stopPropagation = function (e) {
    e.stopPropagation()
 }
 
-function closeModal() {
+function fermerModale() {
    if (modal === null) return
 
    modal.style.display = "none"
    modal.setAttribute("aria-hidden", "true")
-   modal.removeEventListener("click", closeModal)
-   modal.querySelector(".js-modal-close").removeEventListener("click", closeModal)
+   modal.removeEventListener("click", fermerModale)
+   modal.querySelector(".js-modal-close").removeEventListener("click", fermerModale)
    modal.querySelector(".js-modal-stop").removeEventListener("click", stopPropagation)
-   switchModal("modal-v1")
+   changerModale("modal-v1")
    modal = null
 }
 
-const openModal = function (e) {
+const ouvrirModale = function (e) {
    e.preventDefault()
    modal = document.querySelector(e.target.getAttribute("href"))
    modal.style.display = null
    modal.removeAttribute("aria-hidden")
-   modal.querySelector(".js-modal-close").addEventListener("click", closeModal)
+   modal.querySelector(".js-modal-close").addEventListener("click", fermerModale)
    modal.querySelector(".js-modal-stop").addEventListener("click", stopPropagation)
-   modal.addEventListener("click", closeModal)
+   modal.addEventListener("click", fermerModale)
 }
 document.querySelectorAll(".js-modal").forEach(a => {
-   a.addEventListener("click", openModal)
+   a.addEventListener("click", ouvrirModale)
 })
 
 // Modale se ferme en cliquant sur la croix v1 ou v2 
 let fermetureModals = document.querySelectorAll(".js-modal-close").forEach(function (btn) {
-   btn.addEventListener("click", closeModal)
+   btn.addEventListener("click", fermerModale)
 })
 
 
@@ -148,7 +147,7 @@ function genererPhotosModal(works) {
       // Création des balises
       const article = works[i]
 
-      const sectionGallery = document.querySelector(".gallery-modal")
+      const galerieModale = document.querySelector(".gallery-modal")
 
       const articleElement = document.createElement("article")
       articleElement.classList.add("photosRealisation")
@@ -170,9 +169,9 @@ function genererPhotosModal(works) {
       const categoryIdElement = document.createElement("p")
       categoryIdElement.innerText = article.categoryId
 
-      //Ajout de articleElement dans sectionGallery
+      //Ajout de articleElement dans galerieModale
 
-      sectionGallery.appendChild(articleElement)
+      galerieModale.appendChild(articleElement)
 
       //Ajout de nos balises au DOM
       articleElement.appendChild(imageElement)
@@ -183,7 +182,7 @@ function genererPhotosModal(works) {
       iconeElement.addEventListener("click", async (e) => {
          e.preventDefault()
 
-         const sectionFiches = document.querySelector(".gallery")
+         const sectionGalerie = document.querySelector(".gallery")
          const iconeElement = article.id
          const idCible = `fig-${iconeElement}`
 
@@ -198,8 +197,8 @@ function genererPhotosModal(works) {
          if (response.ok) {
             alert("Photo supprimé avec succes")
             const pictureSupprime = document.getElementById(idCible)
-            sectionGallery.removeChild(articleElement)
-            sectionFiches.removeChild(pictureSupprime)
+            galerieModale.removeChild(articleElement)
+            sectionGalerie.removeChild(pictureSupprime)
 
 
          } else {
@@ -214,17 +213,17 @@ genererPhotosModal(works)
 // Switche sur la v2 en cliquant sur le bouton "Ajout photo"
 
 document.querySelector(".btn-ajout").addEventListener("click", function () {
-   switchModal("modal-v2")
+   changerModale("modal-v2")
 });
 
 // Switche sur la v1 en cliquant sur la flèche retour
 document
    .querySelector(".js-retour-modal1")
    .addEventListener("click", function () {
-      switchModal("modal-v1")
-      removePhoto()
-      removeTitle()
-      removeCategory()
+      changerModale("modal-v1")
+      effacerPhoto()
+      effacerTitle()
+      effacerCategory()
       messageErrFormModal.style.visibility = "hidden"
    });
 
@@ -267,23 +266,23 @@ for (let i = 0; i < categories.length; i++) {
 //---------------------------------------------------------------------------------//
 //--------------------------- Effacer le contenu du formulaire --------------------//
 // Fonction effacer la photo uploadée
-function removePhoto() {
+function effacerPhoto() {
    imageForm.value = null
    document.querySelector("#display-image").style.backgroundImage = null
    document.querySelector(".display-image-none").style.display = "block"
 }
 
 // Fonction effacer le titre
-const titleForm = document.querySelector("#title")
+const titreForm = document.querySelector("#title")
 
-function removeTitle() {
-   titleForm.value = null
+function effacerTitle() {
+   titreForm.value = null
 }
 
 // Fonction effacer la categorie selectionnée
 const categoryForm = document.querySelector("#category")
 
-function removeCategory() {
+function effacerCategory() {
    categoryForm.value = null
 }
 
@@ -295,7 +294,7 @@ function removeCategory() {
 function submitFormColor() {
    if (
       imageForm.value.length > 0 &&
-      titleForm.value.length > 0 &&
+      titreForm.value.length > 0 &&
       categoryForm.value.length > 0
    ) {
       document.querySelector(".btn-submit-modal").style.background = "#1D6154"
@@ -305,7 +304,7 @@ function submitFormColor() {
 }
 
 imageForm.addEventListener("change", submitFormColor)
-titleForm.addEventListener("keyup", submitFormColor)
+titreForm.addEventListener("keyup", submitFormColor)
 categoryForm.addEventListener("change", submitFormColor)
 
 //--------------------------------------------------------------------------------//
@@ -334,7 +333,7 @@ projectForm.addEventListener("submit", async function (e) {
       messageErrFormModal.innerText =
          "Veuillez mettre une image dont la taille est < à 4mo"
       messageErrFormModal.style.visibility = "visible"
-      removePhoto()
+      effacerPhoto()
       return 0
    }
 
@@ -363,15 +362,15 @@ projectForm.addEventListener("submit", async function (e) {
 
    if (response.ok) {
       alert("Votre projet a bien été ajouté à la base de données")
-      removePhoto()
-      removeTitle()
-      removeCategory()
-      closeModal()
-      const sectionFiches = document.querySelector(".gallery")
-      const sectionGallery = document.querySelector(".gallery-modal")
+      effacerPhoto()
+      effacerTitle()
+      effacerCategory()
+      fermerModale()
+      const sectionGalerie = document.querySelector(".gallery")
+      const galerieModale = document.querySelector(".gallery-modal")
 
-      sectionFiches.innerHTML = ""
-      sectionGallery.innerHTML = ""
+      sectionGalerie.innerHTML = ""
+      galerieModale.innerHTML = ""
 
       const travaux = await fetchWorks()
       genererPhotosModal(travaux)
